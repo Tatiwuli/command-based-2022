@@ -7,13 +7,13 @@ package frc.robot;
 
 public final class Constants {
 
-    public static final int km_left1Port = 0;
-    public static final int km_left2Port = 0;
-    public static final int km_right1Port = 0;
-    public static final int km_right2Port = 0;
-    public static final int kright2Port = 0;
-    public static final int kleft2Port = 0;
-    public static final int kright1Port = 0;
+    
     public static final int kleft1Port = 0;
-    public static final double kleftSpeed = 0;
-    public static final int kIntakePort = 0;}
+    public static final int kleft2Port = 1;
+    public static final int kright1Port = 2;
+    public static final int kright2Port = 3;
+    public static final double kleftSpeed = 0.4 ;
+    public static final int kIntakePort = 5;
+    public static final int kStick1 = 0;
+
+}

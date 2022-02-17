@@ -13,7 +13,20 @@ public final class Constants {
     public static final int kright1Port = 2;
     public static final int kright2Port = 3;
     public static final double kleftSpeed = 0.4 ;
-    public static final int kIntakePort = 5;
+
     public static final int kStick1 = 0;
+    
+    public static final int kIntakePort = 8;
+    public static final double kIntakeSpeed = 1;
+
+    public static final int kElevatorPort = 6;
+    public static final double kElevatorSpeed = 1;
+
+    public static final int kButtonIntake = 5;
+    public static final int kButtonIntakeFirstCargo = 6;
+    public static final int kButtonElevator = 2;
+    public static final int kButtonReverseElevator = 3;
+
+
 
 }

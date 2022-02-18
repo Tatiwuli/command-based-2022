@@ -22,10 +22,15 @@ public final class Constants {
     public static final int kElevatorPort = 6;
     public static final double kElevatorSpeed = 1;
 
+    public static final int kShooterRightPort = 7;
+    public static final int kShooterLeftPort = 5;
+    public static final double kShooterSpeed = 1;
+
     public static final int kButtonIntake = 5;
     public static final int kButtonIntakeFirstCargo = 6;
     public static final int kButtonElevator = 2;
     public static final int kButtonReverseElevator = 3;
+    public static final int kButtonShooter = 4;
 
 
 

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -13,18 +14,21 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
     private final DriveTrainSubsystem m_driveTrainSubsystem = new DriveTrainSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
     private final Joystick m_stick1 = new Joystick(0);
     private final Joystick m_stick2 = new Joystick(0);
 
     public RobotContainer() {
         m_stick2.setYChannel(5);
+        m_stick2.setThrottleChannel(2);
 
         configureButtonBindings();
     }
@@ -33,6 +37,12 @@ public class RobotContainer {
         m_driveTrainSubsystem.setDefaultCommand(new RunCommand(
                 () -> m_driveTrainSubsystem.drive(m_stick1.getY(), m_stick2.getY()),
                 m_driveTrainSubsystem));
+
+        m_shooterSubsystem.setDefaultCommand(new RunCommand(
+                () -> m_shooterSubsystem.shooter(
+                    m_stick1.getThrottle(), 
+                    m_stick2.getThrottle()), 
+                m_shooterSubsystem));
 
         new JoystickButton(m_stick1, Constants.kButtonIntakeFirstCargo).whileHeld(
                 new IntakeCommand(m_intakeSubsystem, m_elevatorSubsystem, true).withTimeout(5));
@@ -49,6 +59,11 @@ public class RobotContainer {
                 new StartEndCommand(
                         () -> m_elevatorSubsystem.elevatorReverseStart(),
                         () -> m_elevatorSubsystem.elevatorEnd(), m_elevatorSubsystem));
+
+        new JoystickButton(m_stick1, Constants.kButtonShooter).whileHeld(
+                new StartEndCommand(
+                        () -> m_shooterSubsystem.shooterStart(),
+                        () -> m_shooterSubsystem.shooterEnd(), m_shooterSubsystem));
 
     }
 

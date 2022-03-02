@@ -20,12 +20,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean cargoDetect() {
-
         if (sensorElevator.getAverageValue() > 4000) {
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void periodic() {
+        // System.out.println(sensorElevator.getAverageValue());
     }
 
     public void elevatorStart() {

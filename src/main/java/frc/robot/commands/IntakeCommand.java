@@ -14,21 +14,18 @@ public class IntakeCommand extends CommandBase {
     private ElevatorSubsystem m_elevatorSubsystem;
     private boolean firstCargo;
 
-    /** Creates a new IntakeCommand. */
     public IntakeCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, boolean firstCargo) {
-        m_intakeSubsystem = intakeSubsystem;
-        m_elevatorSubsystem = elevatorSubsystem;
-        firstCargo = firstCargo;
+        this.m_intakeSubsystem = intakeSubsystem;
+        this.m_elevatorSubsystem = elevatorSubsystem;
+        this.firstCargo = firstCargo;
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         m_intakeSubsystem.intakeStart();
         m_elevatorSubsystem.elevatorStart();
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
     }
@@ -38,7 +35,6 @@ public class IntakeCommand extends CommandBase {
         return firstCargo && m_elevatorSubsystem.cargoDetect();
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         m_intakeSubsystem.intakeEnd();

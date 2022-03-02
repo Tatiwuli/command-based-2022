@@ -13,20 +13,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private VictorSP m_motorLeft;
     private VictorSP m_motorRight;
+    private MotorControllerGroup m_motors;
 
-    MotorControllerGroup m_motors;
-
-    /** Creates a new ShooterSubsystem. */
     public ShooterSubsystem() {
         m_motorLeft = new VictorSP(Constants.kShooterLeftPort);
         m_motorRight = new VictorSP(Constants.kShooterRightPort);
-
+        m_motorLeft.setInverted(true);
         m_motors = new MotorControllerGroup(m_motorLeft, m_motorRight);
     }
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
     }
 
     public void setMotors(double speed) {

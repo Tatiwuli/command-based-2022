@@ -15,6 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
         m_motor = new VictorSP(Constants.kIntakePort);
+        m_motor.setInverted(true);
     }
 
     public void intakeStart() {

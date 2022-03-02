@@ -34,6 +34,13 @@ public final class Constants {
     public static final int kButtonShooter = 4;
     public static final int kButtonIntake = 5;
     public static final int kButtonIntakeFirstCargo = 6;
+    public static final int kButtonClimbAux = 1;
+    public static final int kButtonClimbMain = 2;
+    public static final double kclimbAuxSpeed = 1;
+    public static final double kclimbAuxSlowSpeed = -0.3;
+    public static final double kclimbMainSpeed = 0.8;
+    public static final int kStickClimb1 = 0;
+    public static final int kStickClimb2 = 0;
 
 
 

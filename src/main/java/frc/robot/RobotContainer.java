@@ -7,10 +7,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.subsystems.ClimbSubsystem;
+// import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -21,26 +25,38 @@ public class RobotContainer {
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-    
+    private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+
     private final Joystick m_stick1Left = new Joystick(0);
     private final Joystick m_stick1Right = new Joystick(0);
-    private final Joystick m_stickClimb = new Joystick(1);
+    private final Joystick m_stickClimb1 = new Joystick(1);
+    private final Joystick m_stickClimb2 = new Joystick(1);
 
     private final JoystickButton m_getFirstCargoCommandButton = new JoystickButton(
-        m_stick1Left, Constants.kButtonIntakeFirstCargo);
+            m_stick1Left, Constants.kButtonIntakeFirstCargo);
     private final JoystickButton m_getCargoCommandButton = new JoystickButton(
-        m_stick1Left, Constants.kButtonIntake);
+            m_stick1Left, Constants.kButtonIntake);
     private final JoystickButton m_shooterCommandButton = new JoystickButton(
-        m_stick1Left, Constants.kButtonShooter);
+            m_stick1Left, Constants.kButtonShooter);
     private final JoystickButton m_elevatorCommandButton = new JoystickButton(
-        m_stick1Left, Constants.kButtonElevator);
+            m_stick1Left, Constants.kButtonElevator);
     private final JoystickButton m_elevatorReverseCommandButton = new JoystickButton(
-        m_stick1Left, Constants.kButtonReverseElevator);
+            m_stick1Left, Constants.kButtonReverseElevator);
+
+    private final JoystickButton m_climbAuxButton = new JoystickButton(
+            m_stickClimb1, Constants.kStickClimb1);
+    private final JoystickButton m_climbButton = new JoystickButton(
+            m_stickClimb1, Constants.kStickClimb1);
+    private final JoystickButton m_climbAuxSlowButton = new JoystickButton(
+            m_stickClimb1, Constants.kStickClimb2);
+    private final JoystickButton m_climbMainButton = new JoystickButton(
+            m_stickClimb1, Constants.kStickClimb2);
 
     public RobotContainer() {
         m_stick1Right.setYChannel(5);
         m_stick1Right.setThrottleChannel(2);
-
+        m_stickClimb1.setYChannel(5);
+        m_stickClimb2.setThrottleChannel(2);
         configureButtonBindings();
     }
 
@@ -49,14 +65,24 @@ public class RobotContainer {
                 () -> m_driveTrainSubsystem.drive(m_stick1Left.getY(), m_stick1Right.getY()),
                 m_driveTrainSubsystem));
 
+        m_climbSubsystem.setDefaultCommand(new RunCommand(
+                () -> m_climbSubsystem.set(m_stickClimb1.getY(), m_stickClimb2.getY()),
+                m_climbSubsystem));
+
         m_shooterSubsystem.setDefaultCommand(new RunCommand(
                 () -> m_shooterSubsystem.shooter(
-                    m_stick1Left.getThrottle(), 
-                    m_stick1Right.getThrottle()), 
+                        m_stick1Left.getThrottle(),
+                        m_stick1Right.getThrottle()),
                 m_shooterSubsystem));
-        
+
+        m_climbSubsystem.setDefaultCommand(new RunCommand(
+                () -> m_climbSubsystem.set(
+                        m_stickClimb1.getThrottle(),
+                        m_stickClimb2.getThrottle()),
+                m_shooterSubsystem));
+
         m_getFirstCargoCommandButton.whenPressed(
-            new IntakeCommand(m_intakeSubsystem, m_elevatorSubsystem, true).withTimeout(Constants.kIntakeTimeout));
+                new IntakeCommand(m_intakeSubsystem, m_elevatorSubsystem, true).withTimeout(Constants.kIntakeTimeout));
         m_getCargoCommandButton.whileHeld(new IntakeCommand(m_intakeSubsystem, m_elevatorSubsystem, false));
 
         m_elevatorCommandButton.whileHeld(
@@ -70,13 +96,33 @@ public class RobotContainer {
                         () -> m_elevatorSubsystem.elevatorEnd(), m_elevatorSubsystem));
 
         m_shooterCommandButton.whenPressed(
-            new RunCommand(() -> m_shooterSubsystem.shooterStart(), m_shooterSubsystem)
-            .withTimeout(Constants.kShooterTimeout)
-            .andThen(new InstantCommand(() -> m_shooterSubsystem.shooterEnd(), m_shooterSubsystem)));
-        m_shooterCommandButton.whileHeld(new StartEndCommand(
-            () -> m_elevatorSubsystem.elevatorStart(),
-            () -> m_elevatorSubsystem.elevatorEnd(), 
-            m_elevatorSubsystem));
+                new RunCommand(() -> m_shooterSubsystem.shooterStart(), m_shooterSubsystem)
+                        .withTimeout(Constants.kShooterTimeout)
+                        .andThen(new InstantCommand(() -> m_shooterSubsystem.shooterEnd(), m_shooterSubsystem)));
+        m_shooterCommandButton.whileHeld(new WaitCommand(Constants.kShooterTimeout).andThen(new StartEndCommand(
+                () -> m_elevatorSubsystem.elevatorStart(),
+                () -> m_elevatorSubsystem.elevatorEnd(),
+                m_elevatorSubsystem)));
+
+        m_climbAuxButton.whileHeld(new StartEndCommand(
+                () -> m_climbSubsystem.auxStart(),
+                () -> m_climbSubsystem.auxEnd(),
+                m_climbSubsystem));
+
+        m_climbButton.whileHeld(new StartEndCommand(
+                () -> m_climbSubsystem.start(),
+                () -> m_climbSubsystem.end(),
+                m_climbSubsystem));
+
+        m_climbAuxSlowButton.whenPressed(new StartEndCommand(
+                () -> m_climbSubsystem.auxSlow(),
+                () -> m_climbSubsystem.auxEnd(),
+                m_climbSubsystem));
+
+        m_climbMainButton.whenPressed(new StartEndCommand(
+                () -> m_climbSubsystem.mainStart(),
+                () -> m_climbSubsystem.mainEnd(),
+                m_climbSubsystem));
 
     }
 

@@ -7,7 +7,6 @@ package frc.robot;
 
 public final class Constants {
 
-    
     public static final int kleft1Port = 0;
     public static final int kleft2Port = 1;
     public static final int kright1Port = 2;
@@ -28,7 +27,10 @@ public final class Constants {
     public static final double kShooterSpeed = 1;
     public static final double kShooterTimeout = 3;
 
-    public static final int kButton_RESERVED_AIM_CAMERA = 1;
+    public static final int kButtonGrabCargo = 1;
+    public static final int kButtonGrabCargoCamera = 8;
+    // public static final int kButtonResetDriveSensors = ;
+    public static final int kButtonReverseIntake = 7;
     public static final int kButtonElevator = 2;
     public static final int kButtonReverseElevator = 3;
     public static final int kButtonShooter = 4;
@@ -36,12 +38,23 @@ public final class Constants {
     public static final int kButtonIntakeFirstCargo = 6;
     public static final int kButtonClimbAux = 1;
     public static final int kButtonClimbMain = 2;
+
+    
+    public static final int kClimbAuxPort = 9;
+    public static final int kClimbMainPort = 4;
     public static final double kclimbAuxSpeed = 1;
     public static final double kclimbAuxSlowSpeed = -0.3;
     public static final double kclimbMainSpeed = 0.8;
-    public static final int kStickClimb1 = 0;
-    public static final int kStickClimb2 = 0;
+    
+    public static final int kStickClimb1 = 1;
+    public static final int kStickClimb2 = 1;
 
-
+    public class Drive {
+        public static final double kTurnP = 0.03;
+        public static final double kTurnI = 0.06;
+        public static final double kTurnD = 0.01;
+        public static final double kToleranceDegrees = 5.0f;
+        public static final double kTurnRateToleranceDegPerS = 10.0f;
+    }
 
 }

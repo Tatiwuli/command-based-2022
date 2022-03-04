@@ -14,8 +14,8 @@ public class ClimbSubsystem extends SubsystemBase {
     VictorSP m_climbMain;
 
     public ClimbSubsystem() {
-        m_climbAux = new VictorSP(Constants.kButtonClimbAux);
-        m_climbMain = new VictorSP(Constants.kButtonClimbMain);
+        m_climbAux = new VictorSP(Constants.kClimbAuxPort);
+        m_climbMain = new VictorSP(Constants.kClimbMainPort);
     }
 
     @Override

@@ -40,6 +40,6 @@ public class ShooterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_elevatorSubsystem.cargoDetect();
+    return m_elevatorSubsystem.cargoDetected();
   }
 }

@@ -19,7 +19,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_motor = new VictorSP(Constants.kElevatorPort);
     }
 
-    public boolean cargoDetect() {
+    public boolean cargoDetected() {
         if (sensorElevator.getAverageValue() > 4000) {
             return true;
         } else {

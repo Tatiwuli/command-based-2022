@@ -22,9 +22,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean cargoDetected() {
         if (sensorElevator.getAverageValue() > 4000) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override

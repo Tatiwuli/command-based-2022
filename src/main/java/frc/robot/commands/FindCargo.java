@@ -10,15 +10,19 @@ import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.vision.FollowCargoRunner;
 
-public class FollowCargo extends PIDCommand {
-
-    public FollowCargo(DriveSubsystem drive) {
+public class FindCargo extends PIDCommand {
+    
+    public FindCargo(DriveSubsystem drive) {
         super(
                 new PIDController(0.08, 0.03, 0.03),
                 Robot.followCargo::getCenterX,
                 0,
                 output -> {
-                    if (Robot.followCargo.detected) drive.arcadeDrive(-0.8, output, 0.6);
+                    if (Robot.followCargo.detected) {
+                        drive.arcadeDrive(0, output, 0.8);
+                    } else {
+                        drive.arcadeDrive(0, 0.6);
+                    }
                 },
                 drive);
         getController().setTolerance(1, 10);

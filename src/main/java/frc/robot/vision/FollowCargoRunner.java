@@ -37,11 +37,22 @@ public class FollowCargoRunner implements Runnable {
     public double getCenterX() {
         return centerX-80;
     }
+
+    public void setCargoColor(CargoColor cargoColor) {
+        this.cargoColor = cargoColor;
+    }
     
     @Override
     public void run() {
         
-		double[] hslThresholdHue = {100.0, 135.0};
+        double[] hslThresholdHue = new double[2];
+        if (cargoColor == CargoColor.BLUE) {
+            hslThresholdHue[0] = 100;
+            hslThresholdHue[1] = 135;
+        } else if (cargoColor == CargoColor.RED) {
+            hslThresholdHue[0] = 0;
+            hslThresholdHue[1] = 30;
+        } 
 		double[] hslThresholdSaturation = {68.0, 255.0};
 		double[] hslThresholdLuminance = {0.0, 160.0};
         

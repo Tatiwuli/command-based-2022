@@ -15,13 +15,18 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.DriveStraight;
+import frc.robot.commands.DriveStraightGyro;
+import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeWithElevatorCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.TurnToAngle;
+import frc.robot.commands.ShooterWithElevatorCommand;
+import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopCommand;
+import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopWithElevatorCommand;
+import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneCommand;
-import frc.robot.commands.autonomous.AutoDriveShootAndGrabTwoCommand;
+import frc.robot.commands.autonomous.AutoDriveShootAndGrabTwoAndStopCommand;
 import frc.robot.commands.autonomous.AutoDriveAndShootCommand;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -37,93 +42,135 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
-    private final Joystick m_stick1Left = new Joystick(0);
-    private final Joystick m_stick1Right = new Joystick(0);
-    private final Joystick m_stickClimb1 = new Joystick(1);
-    private final Joystick m_stickClimb2 = new Joystick(1);
+    private final Joystick m_stick1Left = new Joystick(Constants.Stick1.kStick1Port);
+    private final Joystick m_stick1Right = new Joystick(Constants.Stick1.kStick1Port);
+    private final Joystick m_stickClimb1 = new Joystick(Constants.Stick2.kStick2Port);
+    private final Joystick m_stickClimb2 = new Joystick(Constants.Stick2.kStick2Port);
 
     private final JoystickButton m_reverseIntake = new JoystickButton(
-            m_stick1Right, Constants.kButtonReverseIntake);
+            m_stick1Right, Constants.Stick1.kButtonReverseIntake);
     private final JoystickButton m_grabCargo = new JoystickButton(
-            m_stick1Right, Constants.kButtonGrabCargo);
+            m_stick1Right, Constants.Stick1.kButtonGrabCargo);
     private final JoystickButton m_grabCargoCamera = new JoystickButton(
-            m_stick1Right, Constants.kButtonGrabCargoCamera);
+            m_stick1Right, Constants.Stick1.kButtonGrabCargoCamera);
     private final JoystickButton m_getFirstCargoCommandButton = new JoystickButton(
-            m_stick1Left, Constants.kButtonIntakeFirstCargo);
+            m_stick1Left, Constants.Stick1.kButtonIntakeFirstCargo);
     private final JoystickButton m_getCargoCommandButton = new JoystickButton(
-            m_stick1Left, Constants.kButtonIntake);
+            m_stick1Left, Constants.Stick1.kButtonIntake);
     private final JoystickButton m_shooterCommandButton = new JoystickButton(
-            m_stick1Left, Constants.kButtonShooter);
+            m_stick1Left, Constants.Stick1.kButtonShooter);
     private final JoystickButton m_elevatorCommandButton = new JoystickButton(
-            m_stick1Left, Constants.kButtonElevator);
+            m_stick1Left, Constants.Stick1.kButtonElevator);
     private final JoystickButton m_elevatorReverseCommandButton = new JoystickButton(
-            m_stick1Left, Constants.kButtonReverseElevator);
+            m_stick1Left, Constants.Stick1.kButtonReverseElevator);
 
     private final JoystickButton m_climbButtonForward = new JoystickButton(
-            m_stickClimb1, Constants.kButtonClimbForward);
+            m_stickClimb1, Constants.Stick2.kButtonClimbForward);
     private final JoystickButton m_climbButtonReverse = new JoystickButton(
-            m_stickClimb1, Constants.kButtonClimbReverse);
-    private final JoystickButton m_climbButtonForwardSlow = new JoystickButton(
-            m_stickClimb1, Constants.kButtonForwardSlow);
-    private final JoystickButton m_climbButtonReverseSlow = new JoystickButton(
-            m_stickClimb1, Constants.kButtonClimbReverseSlow);
-
+            m_stickClimb1, Constants.Stick2.kButtonClimbReverse);
     // private final JoystickButton m_resetDrive = new JoystickButton(m_stick1Right,
     // Constants.kButtonResetDriveSensors);
 
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
     Command m_driveAndShoot = new AutoDriveAndShootCommand(m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem);
-    Command m_driveShootGrabOne = new AutoDriveShootAndGrabOneCommand(m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
-    Command m_driveShootGrabTwo = new AutoDriveShootAndGrabTwoCommand(m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabOne = new AutoDriveShootAndGrabOneCommand(m_driveSubsystem, m_shooterSubsystem,
+            m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabTwo = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
+            m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabOneAndStop = new AutoDriveShootAndGrabOneAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
+            m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabTwoAndStop = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
+            m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabOneAndStopWithElevator = new AutoDriveShootAndGrabOneAndStopWithElevatorCommand(
+            m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
+    Command m_driveShootGrabOneOnlyIfDetectedAndStop = new AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand(
+            m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
 
     public RobotContainer() {
         m_stick1Right.setYChannel(5);
         m_stick1Right.setThrottleChannel(2);
         m_stickClimb1.setYChannel(5);
         m_stickClimb2.setThrottleChannel(2);
-        m_autoChooser.setDefaultOption("Simple Auto", m_driveAndShoot);
-        m_autoChooser.addOption("Drive, shoot and grab one cargo", m_driveShootGrabOne);
-        m_autoChooser.addOption("Drive, shoot and grab one cargo", m_driveShootGrabOne);
-        m_autoChooser.addOption("Drive forward", new DriveStraight(-100, m_driveSubsystem));
+        m_autoChooser.setDefaultOption("1 - Drive and Shoot", m_driveAndShoot);
+        m_autoChooser.addOption("2 - Drive, shoot and grab one cargo", m_driveShootGrabOne);
+        m_autoChooser.addOption("3 - Drive, shoot, grab one cargo and stop", m_driveShootGrabOneAndStop);
+        m_autoChooser.addOption("4 - Drive, shoot, grab one cargo and stop with the elevator sensor", 
+                m_driveShootGrabOneAndStopWithElevator);
+        m_autoChooser.addOption("5 - Drive, shoot, grab one cargo (only if detected) and stop with the elevator sensor", 
+                m_driveShootGrabOneOnlyIfDetectedAndStop);
+        m_autoChooser.addOption("6 - Drive, shoot and grab two cargos", m_driveShootGrabTwo);
+        m_autoChooser.addOption("7 - Drive, shoot, grab two cargos and stop", m_driveShootGrabTwoAndStop);
+        m_autoChooser.addOption("8 - Drive backward with intake on", 
+                new DriveStraight(500, m_driveSubsystem).withTimeout(8));
+        m_autoChooser.addOption("9 - Drive forward", new DriveStraight(-50, m_driveSubsystem));
+        m_autoChooser.addOption("10 - Find and grab one cargo", new FindCargo(m_driveSubsystem).withTimeout(4).andThen(
+                new FollowCargo(m_driveSubsystem).alongWith(new IntakeCommand(m_intakeSubsystem))));
+        m_autoChooser.addOption("11 - Shooter with elevator command", new ShooterWithElevatorCommand(m_shooterSubsystem,
+                 m_elevatorSubsystem));
         SmartDashboard.putData(m_autoChooser);
         configureButtonBindings();
     }
 
     private void configureButtonBindings() {
 
+        // INTAKE
         m_grabCargo.toggleWhenPressed(new IntakeCommand(m_intakeSubsystem));
         // m_grabCargoCamera.whileHeld(new FollowCargo(Robot.followCargo,
         // m_driveSubsystem));
         m_grabCargoCamera.whileHeld(new FollowCargo(m_driveSubsystem).alongWith(
                 new IntakeWithElevatorCommand(m_intakeSubsystem, m_elevatorSubsystem, true)
-                        .withTimeout(Constants.kIntakeTimeout)));
-
+                        .withTimeout(Constants.Intake.kIntakeTimeout)));
         m_reverseIntake.whileHeld(new StartEndCommand(
                 () -> m_intakeSubsystem.intakeReverseStart(),
                 () -> m_intakeSubsystem.intakeEnd(), m_intakeSubsystem));
-        // m_resetDrive.whenPressed(new InstantCommand(() -> m_driveSubsystem.reset(),
-        // m_driveSubsystem));
 
+        m_getFirstCargoCommandButton.whenPressed(
+                new IntakeWithElevatorCommand(m_intakeSubsystem, m_elevatorSubsystem, true)
+                        .withTimeout(Constants.Intake.kIntakeTimeout));
+        m_getCargoCommandButton.whileHeld(new IntakeWithElevatorCommand(m_intakeSubsystem, m_elevatorSubsystem, false));
+
+        // DRIVE
         m_driveSubsystem.setDefaultCommand(new RunCommand(
                 () -> m_driveSubsystem.tankDrive(m_stick1Left.getY(), m_stick1Right.getY()),
                 m_driveSubsystem));
+                
+        new POVButton(m_stick1Right, 0)
+                .whileHeld(new DriveStraightGyro(m_driveSubsystem, 1));
+        new POVButton(m_stick1Right, 0).whenReleased(new WaitCommand(2)
+                .andThen(new InstantCommand(() -> m_driveSubsystem.resetForwardOrient(), m_driveSubsystem)));
+        new POVButton(m_stick1Right, 180)
+                .whileHeld(new DriveStraightGyro(m_driveSubsystem, -1));
+        new POVButton(m_stick1Right, 180).whenReleased(new WaitCommand(2)
+                .andThen(new InstantCommand(() -> m_driveSubsystem.resetForwardOrient(), m_driveSubsystem)));
 
+        // CLIMB
         m_climbSubsystem.setDefaultCommand(new RunCommand(
                 () -> m_climbSubsystem.set(m_stickClimb1.getY(), m_stickClimb2.getY()),
                 m_climbSubsystem));
+        m_climbButtonForward.whileHeld(new StartEndCommand(
+                () -> m_climbSubsystem.forward(),
+                () -> m_climbSubsystem.end(),
+                m_climbSubsystem));
+        m_climbButtonReverse.whenPressed(new StartEndCommand(
+                () -> m_climbSubsystem.reverse(),
+                () -> m_climbSubsystem.end(),
+                m_climbSubsystem));
 
+        // SHOOTER
         m_shooterSubsystem.setDefaultCommand(new RunCommand(
                 () -> m_shooterSubsystem.shooter(
                         m_stick1Left.getThrottle(),
                         m_stick1Right.getThrottle()),
                 m_shooterSubsystem));
 
-        m_getFirstCargoCommandButton.whenPressed(
-                new IntakeWithElevatorCommand(m_intakeSubsystem, m_elevatorSubsystem, true)
-                        .withTimeout(Constants.kIntakeTimeout));
-        m_getCargoCommandButton.whileHeld(new IntakeWithElevatorCommand(m_intakeSubsystem, m_elevatorSubsystem, false));
+        m_shooterCommandButton
+                .whenPressed(new InstantCommand(() -> m_shooterSubsystem.shooterStart(), m_shooterSubsystem)
+                        .andThen(new WaitCommand(2))
+                        .andThen(new ShooterCommand(m_shooterSubsystem, m_elevatorSubsystem)
+                                .withTimeout(Constants.Shooter.kShooterTimeout)));
 
+        // ELEVATOR
         m_elevatorCommandButton.whileHeld(
                 new StartEndCommand(
                         () -> m_elevatorSubsystem.elevatorStart(),
@@ -134,37 +181,8 @@ public class RobotContainer {
                         () -> m_elevatorSubsystem.elevatorReverseStart(),
                         () -> m_elevatorSubsystem.elevatorEnd(), m_elevatorSubsystem));
 
-        m_shooterCommandButton.whenPressed(new InstantCommand(() -> m_shooterSubsystem.shooterStart(), m_shooterSubsystem)
-                .andThen(new WaitCommand(2))
-                .andThen(new ShooterCommand(m_shooterSubsystem, m_elevatorSubsystem).withTimeout(Constants.kShooterTimeout))
-        );
-
-        m_climbButtonForward.whileHeld(new StartEndCommand(
-                () -> m_climbSubsystem.forward(),
-                () -> m_climbSubsystem.end(),
-                m_climbSubsystem));
-
-        m_climbButtonForwardSlow.whenPressed(new StartEndCommand(
-                () -> m_climbSubsystem.forwardSlow(),
-                () -> m_climbSubsystem.end(),
-                m_climbSubsystem));
-
-        m_climbButtonReverse.whenPressed(new StartEndCommand(
-                () -> m_climbSubsystem.reverse(),
-                () -> m_climbSubsystem.end(),
-                m_climbSubsystem));
-
-        m_climbButtonReverseSlow.whenPressed(new StartEndCommand(
-                () -> m_climbSubsystem.reverseSlow(),
-                () -> m_climbSubsystem.end(),
-                m_climbSubsystem));
-
-        for (int angle = 0; angle < 360; angle += 45) {
-            new POVButton(m_stick1Right, angle)
-                    .whileHeld(new TurnToAngle(angle, m_driveSubsystem, true, 1.0));
-            new POVButton(m_stick1Right, angle)
-                    .whenReleased(new TurnToAngle(angle, m_driveSubsystem, false).withTimeout(5));
-        }
+        // m_resetDrive.whenPressed(new InstantCommand(() -> m_driveSubsystem.reset(),
+        // m_driveSubsystem));
 
     }
 

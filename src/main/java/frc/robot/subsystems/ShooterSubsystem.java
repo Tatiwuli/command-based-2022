@@ -1,13 +1,10 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -16,14 +13,15 @@ public class ShooterSubsystem extends SubsystemBase {
     private MotorControllerGroup m_motors;
 
     public ShooterSubsystem() {
-        m_motorLeft = new VictorSP(Constants.kShooterLeftPort);
-        m_motorRight = new VictorSP(Constants.kShooterRightPort);
+        m_motorLeft = new VictorSP(Constants.PWMPorts.kShooterLeftPort);
+        m_motorRight = new VictorSP(Constants.PWMPorts.kShooterRightPort);
         m_motorLeft.setInverted(true);
         m_motors = new MotorControllerGroup(m_motorLeft, m_motorRight);
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("[Shooter] ON", m_motors.get() > 0);
     }
 
     public void setMotors(double speed) {
@@ -31,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterStart() {
-        m_motors.set(Constants.kShooterSpeed);
+        m_motors.set(Constants.Shooter.kShooterSpeed);
     }
 
     public void shooterEnd() {

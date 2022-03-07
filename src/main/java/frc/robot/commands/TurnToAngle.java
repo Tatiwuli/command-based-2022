@@ -7,22 +7,20 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class TurnToAngle extends PIDCommand {
 
-    public TurnToAngle(double targetAngleDegrees, DriveSubsystem drive, boolean resetGyro, double forwardVelocity) {
+    public TurnToAngle(double targetAngleDegrees, DriveSubsystem drive, double forwardVelocity) {
         super(new PIDController(Constants.Drive.kTurnP, Constants.Drive.kTurnI, Constants.Drive.kTurnD),
                 drive::getHeading,
                 targetAngleDegrees,
                 output -> drive.arcadeDrive(-forwardVelocity, -output),
                 drive);
-
-        if (resetGyro)
-            drive.resetGyro();
+        
         getController().enableContinuousInput(-180, 180);
         getController()
                 .setTolerance(Constants.Drive.kToleranceDegrees, Constants.Drive.kTurnRateToleranceDegPerS);
     }
 
-    public TurnToAngle(double targetAngleDegrees, DriveSubsystem drive, boolean resetGyro) {
-        this(targetAngleDegrees, drive, resetGyro, 0);
+    public TurnToAngle(double targetAngleDegrees, DriveSubsystem drive) {
+        this(targetAngleDegrees, drive, 0);
     }
 
     @Override

@@ -5,25 +5,22 @@ import frc.robot.commands.DriveStraight;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.IntakeWithElevatorCommand;
 import frc.robot.commands.ShooterWithElevatorCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AutoDriveShootAndGrabOneCommand extends SequentialCommandGroup {
+public class AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand extends SequentialCommandGroup {
 
-    public AutoDriveShootAndGrabOneCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, 
-            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
+    public AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand(DriveSubsystem driveSubsystem, 
+            ShooterSubsystem shooterSubsystem, ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
 
         addCommands(
             new DriveStraight(-100, driveSubsystem),
             new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
             new FindCargo(driveSubsystem).withTimeout(6),
-            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)),
-            new IntakeWithElevatorCommand(intakeSubsystem, elevatorSubsystem, false)
-                    .withTimeout(3));
+            new FollowCargo(driveSubsystem, false).alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(3));
     }
 
 }

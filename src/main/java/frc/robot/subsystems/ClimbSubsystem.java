@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -14,12 +10,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
     VictorSP m_climbAux;
     VictorSP m_climbMain;
-    AnalogInput sensorClimb = new AnalogInput(1);
+    AnalogInput sensorClimb = new AnalogInput(Constants.DIOPorts.kClimbPhotoeletricPort);
 
     public ClimbSubsystem() {
-        m_climbAux = new VictorSP(Constants.kClimbAuxPort);
+        m_climbAux = new VictorSP(Constants.PWMPorts.kClimbAuxPort);
         m_climbAux.setInverted(true);
-        m_climbMain = new VictorSP(Constants.kClimbMainPort);
+        m_climbMain = new VictorSP(Constants.PWMPorts.kClimbMainPort);
     }
 
     public boolean climbDone() {
@@ -31,27 +27,17 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Climb Done", climbDone());
+        SmartDashboard.putBoolean("[Climb] Climb Done", climbDone());
     }
    
     public void reverse(){
-        m_climbAux.set(Constants.kclimbAuxReverseSpeed);
-        m_climbMain.set(Constants.kclimbReverseSpeed);
-    }
-
-    public void reverseSlow(){
-        m_climbAux.set(Constants.kclimbAuxReverseSlowSpeed);
-        m_climbMain.set(Constants.kclimbReverseSlowSpeed);
+        m_climbAux.set(Constants.Climb.kclimbAuxReverseSpeed);
+        m_climbMain.set(Constants.Climb.kclimbReverseSpeed);
     }
 
     public void forward(){
-        m_climbAux.set(Constants.kclimbAuxSpeed);
-        m_climbMain.set(Constants.kclimbSpeed);
-    }
-
-    public void forwardSlow(){
-        m_climbAux.set(Constants.kclimbAuxSlowSpeed);
-        m_climbMain.set(Constants.kclimbSlowSpeed);
+        m_climbAux.set(Constants.Climb.kclimbAuxSpeed);
+        m_climbMain.set(Constants.Climb.kclimbSpeed);
     }
 
     public void set(double speedAux, double speedMain) {

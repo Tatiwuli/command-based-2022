@@ -6,6 +6,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShooterCommand extends CommandBase {
 
+    // NOTE: THIS COMMAND DOES NOT RUN ALONE. Please use ShooterWithElevatorCommand instead.
+
     private ShooterSubsystem m_shooterSubsystem;
     private ElevatorSubsystem m_elevatorSubsystem;
 
@@ -18,10 +20,6 @@ public class ShooterCommand extends CommandBase {
     public void initialize() {
         m_shooterSubsystem.shooterStart();
         m_elevatorSubsystem.elevatorStart();
-    }
-
-    @Override
-    public void execute() {
     }
 
     @Override

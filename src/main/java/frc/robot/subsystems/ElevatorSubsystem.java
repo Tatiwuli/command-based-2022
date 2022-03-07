@@ -1,11 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -13,10 +10,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private VictorSP m_motor;
 
-    AnalogInput sensorElevator = new AnalogInput(0);
+    AnalogInput sensorElevator = new AnalogInput(Constants.DIOPorts.kElevatorPhotoeletricPort);
 
     public ElevatorSubsystem() {
-        m_motor = new VictorSP(Constants.kElevatorPort);
+        m_motor = new VictorSP(Constants.PWMPorts.kElevatorPort);
     }
 
     public boolean cargoDetected() {
@@ -28,15 +25,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println(sensorElevator.getAverageValue());
+        SmartDashboard.putBoolean("[Elevator] Cargo Detected", (sensorElevator.getAverageValue() > 4000));
     }
 
     public void elevatorStart() {
-        m_motor.set(Constants.kElevatorSpeed);
+        m_motor.set(Constants.Elevator.kElevatorSpeed);
     }
 
     public void elevatorReverseStart() {
-        m_motor.set(-Constants.kElevatorSpeed);
+        m_motor.set(-Constants.Elevator.kElevatorSpeed);
     }
 
     public void elevatorEnd() {

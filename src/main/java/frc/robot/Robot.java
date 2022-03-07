@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.vision.CargoColor;
@@ -13,17 +14,20 @@ import frc.robot.vision.FollowCargoRunner;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-    SendableChooser<CargoColor> m_colorChooser = new SendableChooser<>();
-    public static FollowCargoRunner followCargo = new FollowCargoRunner(0, CargoColor.BLUE);
+    private SendableChooser<CargoColor> m_colorChooser = new SendableChooser<>();
+    public static final FollowCargoRunner followCargoRunner = new FollowCargoRunner(0, CargoColor.BLUE);
+    private Thread followCargoThread = new Thread(followCargoRunner);
     private RobotContainer m_robotContainer;
-    Thread followCargoThread;
 
     @Override
     public void robotInit() {
         m_colorChooser.addOption("Blue Cargo", CargoColor.BLUE);
-        m_colorChooser.addOption("Blue Cargo", CargoColor.RED);
+        m_colorChooser.addOption("Red Cargo", CargoColor.RED);
+        m_colorChooser.addOption("Yellow Cargo", CargoColor.YELLOW);
         m_colorChooser.setDefaultOption("Blue Cargo", CargoColor.BLUE);
+        SmartDashboard.putData(m_colorChooser);
         m_robotContainer = new RobotContainer();
+        followCargoThread.start();
     }
 
     @Override
@@ -42,10 +46,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        followCargo = new FollowCargoRunner(0, m_colorChooser.getSelected());
-        if (followCargoThread != null) followCargoThread.interrupt();
-        followCargoThread = new Thread(followCargo);
-        followCargoThread.start();
+        followCargoRunner.setCargoColor(m_colorChooser.getSelected());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -57,13 +58,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        followCargo = new FollowCargoRunner(0, m_colorChooser.getSelected());
-        if (followCargoThread != null) followCargoThread.interrupt();
-        followCargoThread = new Thread(followCargo);
-        followCargoThread.start();
+        followCargoRunner.setCargoColor(m_colorChooser.getSelected());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
-        } 
+        }
     }
 
     @Override

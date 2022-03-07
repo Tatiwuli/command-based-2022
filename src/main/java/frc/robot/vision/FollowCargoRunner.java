@@ -1,7 +1,6 @@
 package frc.robot.vision;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -18,24 +17,45 @@ import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.vision.FollowCargoPipeline.BlurType;
 
 public class FollowCargoRunner implements Runnable {
     
     private CargoColor cargoColor;
     private FollowCargoPipeline pipeline = new FollowCargoPipeline();
-    public double centerX, centerY, area;
-    public boolean detected;
+    private double centerX, centerY, area;
+    private boolean detected;
+    private CvSink cvSink;
+    private CvSource outputStream, outputStreamTresh;
+    private static final int HEIGTH = 120;
+    private static final int WIDTH = 160;
+    private double[] hslThresholdHue = new double[2];
+    private double[] hslThresholdSaturation = {68.0, 255.0};
+    private double[] hslThresholdLuminance = {45.0, 160.0}; // Todo Testar na competição
     
     public FollowCargoRunner(int dev, CargoColor cargoColor) {
         UsbCamera camera = CameraServer.startAutomaticCapture(dev);
         camera.setResolution(160, 120);
         this.cargoColor = cargoColor;
+
+        cvSink = CameraServer.getVideo();
+        outputStream = CameraServer.putVideo("Cargo", HEIGTH, WIDTH);
+        outputStreamTresh = CameraServer.putVideo("Tresh", HEIGTH, WIDTH);
+    }
+
+    public boolean isDetected() {
+        return detected;
+    }
+
+    public double getArea() {
+        return area;
+    }
+
+    public double getCenterY() {
+        return centerY-(HEIGTH/2);
     }
 
     public double getCenterX() {
-        return centerX-80;
+        return centerX-(WIDTH/2);
     }
 
     public void setCargoColor(CargoColor cargoColor) {
@@ -44,28 +64,23 @@ public class FollowCargoRunner implements Runnable {
     
     @Override
     public void run() {
-        
-        double[] hslThresholdHue = new double[2];
-        if (cargoColor == CargoColor.BLUE) {
-            hslThresholdHue[0] = 100;
-            hslThresholdHue[1] = 135;
-        } else if (cargoColor == CargoColor.RED) {
-            hslThresholdHue[0] = 0;
-            hslThresholdHue[1] = 30;
-        } 
-		double[] hslThresholdSaturation = {68.0, 255.0};
-		double[] hslThresholdLuminance = {0.0, 160.0};
-        
-		Point cvAnchor = new Point(-1, -1);
+        Point cvAnchor = new Point(-1, -1);
 		Scalar cvBordervalue = new Scalar(-1);
-
-        CvSink cvSink = CameraServer.getVideo();
-        CvSource outputStream = CameraServer.putVideo("Cargo", 160, 120);
-        CvSource outputStreamTresh = CameraServer.putVideo("Tresh", 160, 120);
         Mat frame = new Mat();
         Mat mat = new Mat();
-
+        
         while (!Thread.interrupted()) {
+            if (cargoColor == CargoColor.BLUE) {
+                hslThresholdHue[0] = 100;
+                hslThresholdHue[1] = 135;
+            } else if (cargoColor == CargoColor.RED) {
+                hslThresholdHue[0] = 0;
+                hslThresholdHue[1] = 30;
+            } else if (cargoColor == CargoColor.YELLOW) {
+                hslThresholdHue[0] = 30;
+                hslThresholdHue[1] = 80;
+            } 
+
             if (cvSink.grabFrame(frame) == 0) {
               outputStream.notifyError(cvSink.getError());
               continue;

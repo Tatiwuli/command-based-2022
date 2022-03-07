@@ -12,18 +12,18 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AutoDriveShootAndGrabOneCommand extends SequentialCommandGroup {
+public class AutoDriveShootAndGrabTwoAndStopCommand extends SequentialCommandGroup {
 
-    public AutoDriveShootAndGrabOneCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, 
+    public AutoDriveShootAndGrabTwoAndStopCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, 
             ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
 
         addCommands(
             new DriveStraight(-100, driveSubsystem),
             new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
-            new FindCargo(driveSubsystem).withTimeout(6),
-            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)),
-            new IntakeWithElevatorCommand(intakeSubsystem, elevatorSubsystem, false)
-                    .withTimeout(3));
+            new FindCargo(driveSubsystem).withTimeout(3),
+            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(3),
+            new FindCargo(driveSubsystem).withTimeout(3),
+            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(3));
     }
 
 }

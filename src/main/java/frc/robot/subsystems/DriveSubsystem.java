@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -24,21 +20,26 @@ public class DriveSubsystem extends SubsystemBase {
     private Spark m_right1;
     private Spark m_right2;
 
-    private Encoder m_leftEncoder = new Encoder(4, 5);
-    private Encoder m_rightEncoder = new Encoder(6, 7);
+    private Encoder m_leftEncoder = new Encoder(
+        Constants.DIOPorts.kEncoderLeftPortA, Constants.DIOPorts.kEncoderLeftPortB);
+    private Encoder m_rightEncoder = new Encoder(
+        Constants.DIOPorts.kEncoderRightPortA, Constants.DIOPorts.kEncoderRightPortB);
 
     private MotorControllerGroup m_leftMotors;
     private MotorControllerGroup m_rightMotors;
     private DifferentialDrive m_drive;
 
+    private static final double FORWARD_ORIENT_NOT_SET = -1;
+    private double forwardOrient = FORWARD_ORIENT_NOT_SET;
+
     private AHRS m_gyro;
     // PIDController m_turnController;
 
     public DriveSubsystem() {
-        m_left1 = new Spark(Constants.kleft1Port);
-        m_left2 = new Spark(Constants.kleft2Port);
-        m_right1 = new Spark(Constants.kright1Port);
-        m_right2 = new Spark(Constants.kright2Port);
+        m_left1 = new Spark(Constants.PWMPorts.kLeft1Port);
+        m_left2 = new Spark(Constants.PWMPorts.kLeft2Port);
+        m_right1 = new Spark(Constants.PWMPorts.kRight1Port);
+        m_right2 = new Spark(Constants.PWMPorts.kRight2Port);
 
         m_rightEncoder.setReverseDirection(true);
         m_leftEncoder.setDistancePerPulse(0.00920361328125);
@@ -51,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
         m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
         try {
-            m_gyro = new AHRS(Port.kUSB);
+            m_gyro = new AHRS(Constants.kGyroPort);
             m_gyro.setAngleAdjustment(180);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
@@ -74,13 +75,29 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void reset() {
-        m_gyro.reset();
+        if (m_gyro != null)
+            m_gyro.reset();
         m_leftEncoder.reset();
         m_rightEncoder.reset();
     }
 
     public void resetGyro() {
-        m_gyro.reset();
+        if (m_gyro != null){
+            System.out.println("Reset gyro");
+            m_gyro.reset();
+        }
+    }
+
+    public double getForwardOrient() {
+        System.out.println(forwardOrient);
+        if (forwardOrient == FORWARD_ORIENT_NOT_SET) {
+            this.forwardOrient = getHeading();
+        }
+        return forwardOrient;
+    }
+
+    public void resetForwardOrient() {
+        forwardOrient = FORWARD_ORIENT_NOT_SET;
     }
 
     public double getDistance() {
@@ -110,7 +127,9 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return m_gyro.getYaw();
+        if (m_gyro != null)
+            return m_gyro.getYaw();
+        return 0;
     }
 
     public void arcadeDrive(double xSpeed, double zRotation, double limit) {

@@ -1,31 +1,35 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.vision.FollowCargoRunner;
 
 public class FollowCargo extends PIDCommand {
 
-    public FollowCargo(DriveSubsystem drive) {
+    public FollowCargo(DriveSubsystem driveSubsystem, boolean keepGoingIfNotDetected) {
         super(
                 new PIDController(0.08, 0.03, 0.03),
-                Robot.followCargo::getCenterX,
+                Robot.followCargoRunner::getCenterX,
                 0,
                 output -> {
-                    if (Robot.followCargo.detected) drive.arcadeDrive(-0.8, output, 0.6);
+                    System.out.println("output");
+                    if (Robot.followCargoRunner.isDetected()) {
+                        driveSubsystem.arcadeDrive(-0.75, output, 0.6);
+                    } else if (keepGoingIfNotDetected) {
+                        driveSubsystem.tankDrive(-0.65, -0.58);  
+                    }
                 },
-                drive);
+                driveSubsystem);
         getController().setTolerance(1, 10);
+    }
+
+    public FollowCargo(DriveSubsystem driveSubsystem) {
+        this(driveSubsystem, true);
     }
 
     @Override
     public boolean isFinished() {
-        return getController().atSetpoint() && Robot.followCargo.area > 5000;
+        return getController().atSetpoint() && Robot.followCargoRunner.getArea() > 5000;
     }
 }

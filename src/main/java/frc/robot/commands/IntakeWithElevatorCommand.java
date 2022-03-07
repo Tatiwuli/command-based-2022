@@ -23,10 +23,6 @@ public class IntakeWithElevatorCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-    }
-
-    @Override
     public boolean isFinished() {
         return firstCargo && m_elevatorSubsystem.cargoDetected();
     }

@@ -1,6 +1,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
@@ -18,7 +19,7 @@ public class AutoDriveShootAndGrabTwoCommand extends SequentialCommandGroup {
             ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
 
         addCommands(
-            new DriveStraight(-100, driveSubsystem),
+            new DriveStraight(Constants.Auto.initialDistance, driveSubsystem),
             new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
             new FindCargo(driveSubsystem).withTimeout(3),
             new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)),

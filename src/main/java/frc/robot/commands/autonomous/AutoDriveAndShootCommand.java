@@ -1,6 +1,7 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.ShooterWithElevatorCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -13,7 +14,7 @@ public class AutoDriveAndShootCommand extends SequentialCommandGroup {
             ElevatorSubsystem elevatorSubsystem) {
 
         addCommands(
-            new DriveStraight(-100, driveSubsystem).withTimeout(8),
+            new DriveStraight(Constants.Auto.initialDistance, driveSubsystem).withTimeout(8),
             new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem)
         );
     }

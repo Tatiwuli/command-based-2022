@@ -79,7 +79,9 @@ public class RobotContainer {
     Command m_driveShootGrabTwo = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
             m_elevatorSubsystem, m_intakeSubsystem);
     Command m_driveShootGrabOneAndStop = new AutoDriveShootAndGrabOneAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
-            m_elevatorSubsystem, m_intakeSubsystem);
+            m_elevatorSubsystem, m_intakeSubsystem, true);
+    Command m_driveShootGrabOneWithoutCamAndStop = new AutoDriveShootAndGrabOneAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
+            m_elevatorSubsystem, m_intakeSubsystem, false);
     Command m_driveShootGrabTwoAndStop = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
             m_elevatorSubsystem, m_intakeSubsystem);
     Command m_driveShootGrabOneAndStopWithElevator = new AutoDriveShootAndGrabOneAndStopWithElevatorCommand(
@@ -95,18 +97,19 @@ public class RobotContainer {
         m_autoChooser.setDefaultOption("1 - Drive and Shoot", m_driveAndShoot);
         m_autoChooser.addOption("2 - Drive, shoot and grab one cargo", m_driveShootGrabOne);
         m_autoChooser.addOption("3 - Drive, shoot, grab one cargo and stop", m_driveShootGrabOneAndStop);
-        m_autoChooser.addOption("4 - Drive, shoot, grab one cargo and stop with the elevator sensor", 
+        m_autoChooser.addOption("4 - Drive, shoot and grab one cargo (without camera) and stop", m_driveShootGrabOneWithoutCamAndStop);
+        m_autoChooser.addOption("5 - Drive, shoot, grab one cargo and stop with the elevator sensor", 
                 m_driveShootGrabOneAndStopWithElevator);
-        m_autoChooser.addOption("5 - Drive, shoot, grab one cargo (only if detected) and stop with the elevator sensor", 
+        m_autoChooser.addOption("6 - Drive, shoot, grab one cargo (only if detected) and stop with the elevator sensor", 
                 m_driveShootGrabOneOnlyIfDetectedAndStop);
-        m_autoChooser.addOption("6 - Drive, shoot and grab two cargos", m_driveShootGrabTwo);
-        m_autoChooser.addOption("7 - Drive, shoot, grab two cargos and stop", m_driveShootGrabTwoAndStop);
-        m_autoChooser.addOption("8 - Drive backward with intake on", 
-                new DriveStraight(500, m_driveSubsystem).withTimeout(8));
-        m_autoChooser.addOption("9 - Drive forward", new DriveStraight(-50, m_driveSubsystem));
-        m_autoChooser.addOption("10 - Find and grab one cargo", new FindCargo(m_driveSubsystem).withTimeout(4).andThen(
+        m_autoChooser.addOption("7 - Drive, shoot and grab two cargos", m_driveShootGrabTwo);
+        m_autoChooser.addOption("8 - Drive, shoot, grab two cargos and stop", m_driveShootGrabTwoAndStop);
+        m_autoChooser.addOption("9 - Drive 200ft backward with intake on", 
+                new DriveStraight(200, m_driveSubsystem).withTimeout(8));
+        m_autoChooser.addOption("10 - Drive forward", new DriveStraight(100, m_driveSubsystem));
+        m_autoChooser.addOption("11 - Find and grab one cargo", new FindCargo(m_driveSubsystem).withTimeout(4).andThen(
                 new FollowCargo(m_driveSubsystem).alongWith(new IntakeCommand(m_intakeSubsystem))));
-        m_autoChooser.addOption("11 - Shooter with elevator command", new ShooterWithElevatorCommand(m_shooterSubsystem,
+        m_autoChooser.addOption("12 - Shooter with elevator command", new ShooterWithElevatorCommand(m_shooterSubsystem,
                  m_elevatorSubsystem));
         SmartDashboard.putData(m_autoChooser);
         configureButtonBindings();
@@ -137,16 +140,19 @@ public class RobotContainer {
                 
         new POVButton(m_stick1Right, 0)
                 .whileHeld(new DriveStraightGyro(m_driveSubsystem, 1));
-        new POVButton(m_stick1Right, 0).whenReleased(new WaitCommand(2)
+        new POVButton(m_stick1Right, 0).whenReleased(new WaitCommand(1)
                 .andThen(new InstantCommand(() -> m_driveSubsystem.resetForwardOrient(), m_driveSubsystem)));
         new POVButton(m_stick1Right, 180)
                 .whileHeld(new DriveStraightGyro(m_driveSubsystem, -1));
-        new POVButton(m_stick1Right, 180).whenReleased(new WaitCommand(2)
+        new POVButton(m_stick1Right, 180).whenReleased(new WaitCommand(1)
                 .andThen(new InstantCommand(() -> m_driveSubsystem.resetForwardOrient(), m_driveSubsystem)));
 
         // CLIMB
         m_climbSubsystem.setDefaultCommand(new RunCommand(
-                () -> m_climbSubsystem.set(m_stickClimb1.getY(), m_stickClimb2.getY()),
+                () -> {
+                    System.out.println(m_stickClimb1.getY() + " " + m_stickClimb2.getY());
+                    m_climbSubsystem.set(m_stickClimb1.getY(), m_stickClimb2.getY());
+                },
                 m_climbSubsystem));
         m_climbButtonForward.whileHeld(new StartEndCommand(
                 () -> m_climbSubsystem.forward(),

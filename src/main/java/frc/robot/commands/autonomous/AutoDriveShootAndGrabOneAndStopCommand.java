@@ -1,8 +1,7 @@
 package frc.robot.commands.autonomous;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
@@ -16,13 +15,19 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class AutoDriveShootAndGrabOneAndStopCommand extends SequentialCommandGroup {
 
     public AutoDriveShootAndGrabOneAndStopCommand(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, 
-            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
+            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, boolean useCamera) {
 
-        addCommands(
-            new DriveStraight(-100, driveSubsystem),
-            new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
-            new FindCargo(driveSubsystem).withTimeout(6),
-            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(3));
+        if (useCamera) {
+            addCommands(
+                new DriveStraight(Constants.Auto.initialDistance, driveSubsystem),
+                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
+                new FindCargo(driveSubsystem).withTimeout(6),
+                new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(3));
+        } else {
+            addCommands(
+                new DriveStraight(Constants.Auto.initialDistance, driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)),
+                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem));
+        }
     }
 
 }

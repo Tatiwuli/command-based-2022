@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 public final class Constants {
 
     public class Auto {
-        public static final int autoDriveDistance = 50;
+        public static final int autoDriveDistance = 100;
     }
 
     public class Stick1 {

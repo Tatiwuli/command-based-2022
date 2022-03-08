@@ -6,6 +6,7 @@ import frc.robot.commands.DriveStraight;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.GrabCargo;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterWithElevatorCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -19,15 +20,18 @@ public class AutoDriveShootAndGrabOneAndStopCommand extends SequentialCommandGro
 
         if (useCamera) {
             addCommands(
-                new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem).withTimeout(6),
-                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
+                new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem)
+                        .alongWith(new IntakeCommand(intakeSubsystem))
+                        .alongWith(new ShooterCommand(shooterSubsystem, elevatorSubsystem))
+                        .withTimeout(5),
+                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem, 0).withTimeout(5),
                 new FindCargo(driveSubsystem).withTimeout(6),
-                new GrabCargo(driveSubsystem, elevatorSubsystem, intakeSubsystem).withTimeout(3));
+                new GrabCargo(driveSubsystem, elevatorSubsystem, intakeSubsystem).withTimeout(6));
         } else {
             addCommands(
                 new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem)
                         .alongWith(new IntakeCommand(intakeSubsystem)).withTimeout(6),
-                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem));
+                new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem, 0).withTimeout(6));
         }
     }
 

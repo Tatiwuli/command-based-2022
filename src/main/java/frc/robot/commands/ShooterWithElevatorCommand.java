@@ -10,11 +10,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShooterWithElevatorCommand extends SequentialCommandGroup {
 
     public ShooterWithElevatorCommand(ShooterSubsystem shooterSubsystem, 
-            ElevatorSubsystem elevatorSubsystem) {
+            ElevatorSubsystem elevatorSubsystem, double prepareTime) {
 
         addCommands(
             new InstantCommand(() -> shooterSubsystem.shooterStart(), shooterSubsystem),
-            new WaitCommand(2),
+            new WaitCommand(prepareTime),
             new ShooterCommand(shooterSubsystem, elevatorSubsystem).withTimeout(Constants.Shooter.kShooterTimeout)
         );
     }

@@ -6,6 +6,7 @@ import frc.robot.commands.DriveStraight;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.IntakeWithElevatorCommand;
 import frc.robot.commands.ShooterWithElevatorCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -19,12 +20,14 @@ public class AutoDriveShootAndGrabOneCommand extends SequentialCommandGroup {
             ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
 
         addCommands(
-            new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem),
-            new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
+            new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem)
+                    .alongWith(new ShooterCommand(shooterSubsystem, elevatorSubsystem))
+                    .alongWith(new IntakeCommand(intakeSubsystem)),
+            new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem, 0),
             new FindCargo(driveSubsystem).withTimeout(6),
             new FollowCargo(driveSubsystem, elevatorSubsystem, true, true).alongWith(new IntakeCommand(intakeSubsystem)),
             new IntakeWithElevatorCommand(intakeSubsystem, elevatorSubsystem, false)
-                    .withTimeout(3));
+                    .withTimeout(6));
     }
 
 }

@@ -32,8 +32,8 @@ public class FollowCargoRunner implements Runnable {
     private double[] hslThresholdSaturation = {68.0, 255.0};
     private double[] hslThresholdLuminance = {45.0, 180.0}; // Todo Testar na competição: 160, 200?
     
-    public FollowCargoRunner(int dev, CargoColor cargoColor) {
-        UsbCamera camera = CameraServer.startAutomaticCapture(dev);
+    public FollowCargoRunner(CargoColor cargoColor) {
+        UsbCamera camera = CameraServer.startAutomaticCapture();
         camera.setResolution(160, 120);
         this.cargoColor = cargoColor;
 

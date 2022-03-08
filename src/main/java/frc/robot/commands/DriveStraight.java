@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Util;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -19,8 +20,10 @@ public class DriveStraight extends CommandBase {
         this.m_driveSubsystem = driveSubsystem;
 
         this.distance = distance;
-        this.m_leftPidController = new PIDController(0.03, 0, 0);
-        this.m_rightPidController = new PIDController(0.05, 0, 0);
+        this.m_leftPidController = new PIDController(Constants.Drive.kEncoderLeftP, 
+                Constants.Drive.kEncoderLeftI, Constants.Drive.kEncoderLeftD);
+        this.m_rightPidController = new PIDController(Constants.Drive.kEncoderRightP,
+                Constants.Drive.kEncoderRightI, Constants.Drive.kEncoderRightD);
         this.m_leftPidController.setTolerance(1);
         this.m_rightPidController.setTolerance(1);
     }
@@ -34,6 +37,7 @@ public class DriveStraight extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println("DriveStraight");
         double leftOutput = this.m_leftPidController.calculate(this.m_driveSubsystem.getLeftDistance());
         double rightOutput = this.m_rightPidController.calculate(this.m_driveSubsystem.getRightDistance());
         m_driveSubsystem.tankDrive(Util.limit(-leftOutput, PWM_CORRECTION_FACTOR_LEFT), Util.limit(-rightOutput, PWM_CORRECTION_FACTOR_RIGHT));

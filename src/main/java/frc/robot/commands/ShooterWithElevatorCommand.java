@@ -18,4 +18,10 @@ public class ShooterWithElevatorCommand extends SequentialCommandGroup {
             new ShooterCommand(shooterSubsystem, elevatorSubsystem).withTimeout(Constants.Shooter.kShooterTimeout)
         );
     }
+
+    @Override
+    public void execute() {
+        System.out.println("ShooterWithElevatorCommand");
+        super.execute();
+    }
 }

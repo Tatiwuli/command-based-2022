@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
 
 public final class Constants {
 
+    public class Auto {
+        public static final int autoDriveDistance = 50;
+    }
+
     public class Stick1 {
         public static final int kStick1Port = 0;
         public static final int kButtonGrabCargo = 1;
@@ -74,5 +78,11 @@ public final class Constants {
         public static final double kTurnD = 0.01;
         public static final double kToleranceDegrees = 5.0f;
         public static final double kTurnRateToleranceDegPerS = 10.0f;
+        public static final double kEncoderLeftP = 0.03;
+        public static final double kEncoderLeftI = 0.01;
+        public static final double kEncoderLeftD = 0;
+        public static final double kEncoderRightP = 0.03;
+        public static final double kEncoderRightI = 0.01;
+        public static final double kEncoderRightD = 0;
     }
 }

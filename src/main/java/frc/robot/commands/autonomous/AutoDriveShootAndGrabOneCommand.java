@@ -19,10 +19,10 @@ public class AutoDriveShootAndGrabOneCommand extends SequentialCommandGroup {
             ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
 
         addCommands(
-            new DriveStraight(Constants.Auto.initialDistance, driveSubsystem),
+            new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem),
             new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem),
             new FindCargo(driveSubsystem).withTimeout(6),
-            new FollowCargo(driveSubsystem).alongWith(new IntakeCommand(intakeSubsystem)),
+            new FollowCargo(driveSubsystem, elevatorSubsystem, true, true).alongWith(new IntakeCommand(intakeSubsystem)),
             new IntakeWithElevatorCommand(intakeSubsystem, elevatorSubsystem, false)
                     .withTimeout(3));
     }

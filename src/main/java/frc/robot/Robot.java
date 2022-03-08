@@ -15,7 +15,7 @@ import frc.robot.vision.FollowCargoRunner;
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     private SendableChooser<CargoColor> m_colorChooser = new SendableChooser<>();
-    public static final FollowCargoRunner followCargoRunner = new FollowCargoRunner(0, CargoColor.BLUE);
+    public static final FollowCargoRunner followCargoRunner = new FollowCargoRunner(CargoColor.BLUE);
     private Thread followCargoThread = new Thread(followCargoRunner);
     private RobotContainer m_robotContainer;
 

@@ -22,6 +22,12 @@ public class FindCargo extends PIDCommand {
                 drive);
         getController().setTolerance(1, 30);
     }
+    
+    @Override
+    public void execute() {
+        System.out.println("FindCargo");
+        super.execute();
+    }
 
     @Override
     public boolean isFinished() {

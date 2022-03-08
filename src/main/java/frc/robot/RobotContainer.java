@@ -18,10 +18,12 @@ import frc.robot.commands.DriveStraight;
 import frc.robot.commands.DriveStraightGyro;
 import frc.robot.commands.FindCargo;
 import frc.robot.commands.FollowCargo;
+import frc.robot.commands.GrabCargo;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeWithElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterWithElevatorCommand;
+import frc.robot.commands.TurnToAngle;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopWithElevatorCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand;
@@ -74,6 +76,8 @@ public class RobotContainer {
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
 
     Command m_driveAndShoot = new AutoDriveAndShootCommand(m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem);
+    Command m_driveWithIntakeOnAndShoot = new AutoDriveAndShootCommand(m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, 
+            m_intakeSubsystem, true);
     Command m_driveShootGrabOne = new AutoDriveShootAndGrabOneCommand(m_driveSubsystem, m_shooterSubsystem,
             m_elevatorSubsystem, m_intakeSubsystem);
     Command m_driveShootGrabTwo = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
@@ -84,33 +88,44 @@ public class RobotContainer {
             m_elevatorSubsystem, m_intakeSubsystem, false);
     Command m_driveShootGrabTwoAndStop = new AutoDriveShootAndGrabTwoAndStopCommand(m_driveSubsystem, m_shooterSubsystem,
             m_elevatorSubsystem, m_intakeSubsystem);
-    Command m_driveShootGrabOneAndStopWithElevator = new AutoDriveShootAndGrabOneAndStopWithElevatorCommand(
-            m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
     Command m_driveShootGrabOneOnlyIfDetectedAndStop = new AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand(
             m_driveSubsystem, m_shooterSubsystem, m_elevatorSubsystem, m_intakeSubsystem);
+            
 
     public RobotContainer() {
         m_stick1Right.setYChannel(5);
         m_stick1Right.setThrottleChannel(2);
         m_stickClimb1.setYChannel(5);
         m_stickClimb2.setThrottleChannel(2);
-        m_autoChooser.setDefaultOption("1 - Drive and Shoot", m_driveAndShoot);
-        m_autoChooser.addOption("2 - Drive, shoot and grab one cargo", m_driveShootGrabOne);
-        m_autoChooser.addOption("3 - Drive, shoot, grab one cargo and stop", m_driveShootGrabOneAndStop);
-        m_autoChooser.addOption("4 - Drive, shoot and grab one cargo (without camera) and stop", m_driveShootGrabOneWithoutCamAndStop);
-        m_autoChooser.addOption("5 - Drive, shoot, grab one cargo and stop with the elevator sensor", 
-                m_driveShootGrabOneAndStopWithElevator);
-        m_autoChooser.addOption("6 - Drive, shoot, grab one cargo (only if detected) and stop with the elevator sensor", 
-                m_driveShootGrabOneOnlyIfDetectedAndStop);
-        m_autoChooser.addOption("7 - Drive, shoot and grab two cargos", m_driveShootGrabTwo);
-        m_autoChooser.addOption("8 - Drive, shoot, grab two cargos and stop", m_driveShootGrabTwoAndStop);
-        m_autoChooser.addOption("9 - Drive 200ft backward with intake on", 
-                new DriveStraight(200, m_driveSubsystem).withTimeout(8));
-        m_autoChooser.addOption("10 - Drive forward", new DriveStraight(100, m_driveSubsystem));
-        m_autoChooser.addOption("11 - Find and grab one cargo", new FindCargo(m_driveSubsystem).withTimeout(4).andThen(
-                new FollowCargo(m_driveSubsystem).alongWith(new IntakeCommand(m_intakeSubsystem))));
-        m_autoChooser.addOption("12 - Shooter with elevator command", new ShooterWithElevatorCommand(m_shooterSubsystem,
-                 m_elevatorSubsystem));
+        m_autoChooser.setDefaultOption("1 - [AUTO] Drive and shoot", /* OK */
+                m_driveAndShoot); /* OK */  
+        m_autoChooser.addOption("2 - [AUTO] Drive, shoot and grab one cargo",
+                m_driveShootGrabOne); 
+        m_autoChooser.addOption("3 - [AUTO] Drive, shoot, grab one cargo and stop",  /* OK */ /* TOP */ 
+                m_driveShootGrabOneAndStop);
+        m_autoChooser.addOption("4 - [AUTO] Drive, shoot and grab one cargo (without camera) and stop", /* OK */ 
+                m_driveShootGrabOneWithoutCamAndStop); 
+        m_autoChooser.addOption("5 - [AUTO] Drive, shoot, grab one cargo (only if detected) and stop",  /* OK */
+                m_driveShootGrabOneOnlyIfDetectedAndStop); 
+        m_autoChooser.addOption("6 - [AUTO] Drive, shoot and grab two cargos", /* NOT TESTED */
+                m_driveShootGrabTwo); 
+        m_autoChooser.addOption("7 - [AUTO] Drive, shoot, grab two cargos and stop",  /* NOT TESTED */
+                m_driveShootGrabTwoAndStop); 
+        m_autoChooser.addOption("8 - [AUTO] Drive 200ft backward with intake on", /* OK */
+                new DriveStraight(200, m_driveSubsystem).withTimeout(8)); 
+        m_autoChooser.addOption("9 - Drive forward", 
+                new DriveStraight(100, m_driveSubsystem));
+        m_autoChooser.addOption("10 - Drive forward (using gyro)", 
+                new DriveStraightGyro(m_driveSubsystem, 0.7).withTimeout(5));
+        m_autoChooser.addOption("11 - Find and grab one cargo", /* OK */
+                new FindCargo(m_driveSubsystem).withTimeout(6).andThen(
+                new GrabCargo(m_driveSubsystem, m_elevatorSubsystem, m_intakeSubsystem).withTimeout(6)));       
+        m_autoChooser.addOption("12 - Shooter with elevator command", 
+                new ShooterWithElevatorCommand(m_shooterSubsystem, m_elevatorSubsystem));
+        m_autoChooser.setDefaultOption("13 - Drive with intake on and shoot", 
+                m_driveWithIntakeOnAndShoot);
+        m_autoChooser.setDefaultOption("14 - Grab cargo if detected", /* OK */
+                new GrabCargo(m_driveSubsystem, m_elevatorSubsystem, m_intakeSubsystem).withTimeout(5));
         SmartDashboard.putData(m_autoChooser);
         configureButtonBindings();
     }

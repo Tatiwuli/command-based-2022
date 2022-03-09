@@ -119,7 +119,7 @@ public class FollowCargoRunner implements Runnable {
                     } else {
                         detected = false;
                     }
-                    if ((area > 250 && circulariy > 0.8) || area > 2000 && circulariy > 0.55) {
+                    if ((area < 2000 && area > 250 && circulariy > 0.8) || area > 2000 && circulariy > 0.55) {
                         detected = true;
                         this.centerX = center.x;
                         this.centerY = center.y;

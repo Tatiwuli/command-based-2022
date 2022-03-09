@@ -7,7 +7,7 @@ import frc.robot.commands.FindCargo;
 import frc.robot.commands.GrabCargo;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ShooterWithElevatorCommand;
+import frc.robot.commands.PrepareAndShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -20,9 +20,9 @@ public class AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand extends Sequen
 
         addCommands(
             new DriveStraight(Constants.Auto.autoDriveDistance, driveSubsystem)
-                    .alongWith(new ShooterCommand(shooterSubsystem, elevatorSubsystem))
+                    .alongWith(new ShooterCommand(shooterSubsystem, elevatorSubsystem, false))
                     .alongWith(new IntakeCommand(intakeSubsystem)),
-            new ShooterWithElevatorCommand(shooterSubsystem, elevatorSubsystem, 0),
+            new PrepareAndShootCommand(shooterSubsystem, elevatorSubsystem, 0),
             new FindCargo(driveSubsystem).withTimeout(6),
             new GrabCargo(driveSubsystem, elevatorSubsystem, intakeSubsystem));
     }

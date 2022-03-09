@@ -6,20 +6,28 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShooterCommand extends CommandBase {
 
-    // NOTE: THIS COMMAND DOES NOT RUN ALONE. Please use ShooterWithElevatorCommand instead.
+    // NOTE: THIS COMMAND DOES NOT RUN ALONE. Please use PrepareAndShootCommand instead.
 
     private ShooterSubsystem m_shooterSubsystem;
     private ElevatorSubsystem m_elevatorSubsystem;
+    private boolean m_activateElevator;
 
-    public ShooterCommand(ShooterSubsystem shooterSubsystem, ElevatorSubsystem elevatorSubsystem) {
-        m_shooterSubsystem = shooterSubsystem;
-        m_elevatorSubsystem = elevatorSubsystem;
+    public ShooterCommand(ShooterSubsystem shooterSubsystem, ElevatorSubsystem elevatorSubsystem, boolean activateElevator) {
+        this.m_shooterSubsystem = shooterSubsystem;
+        this.m_elevatorSubsystem = elevatorSubsystem;
+        this.m_activateElevator = activateElevator;
     }
-
+    
+    public ShooterCommand(ShooterSubsystem shooterSubsystem, ElevatorSubsystem elevatorSubsystem) {
+        this(shooterSubsystem, elevatorSubsystem, true);
+    }
+    
     @Override
     public void initialize() {
         m_shooterSubsystem.shooterStart();
-        m_elevatorSubsystem.elevatorStart();
+        if (m_activateElevator) {
+            m_elevatorSubsystem.elevatorStart();
+        } 
     }
 
     @Override

@@ -20,7 +20,7 @@ public class FindCargo extends PIDCommand {
                     }
                 },
                 drive);
-        getController().setTolerance(1, 30);
+        getController().setTolerance(30, 30);
     }
     
     @Override
@@ -31,6 +31,6 @@ public class FindCargo extends PIDCommand {
 
     @Override
     public boolean isFinished() {
-        return Robot.followCargoRunner.isDetected();
+        return getController().atSetpoint();
     }
 }

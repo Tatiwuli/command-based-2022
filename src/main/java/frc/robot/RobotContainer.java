@@ -22,10 +22,8 @@ import frc.robot.commands.GrabCargo;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeWithElevatorCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ShooterWithElevatorCommand;
-import frc.robot.commands.TurnToAngle;
+import frc.robot.commands.PrepareAndShootCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopCommand;
-import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneAndStopWithElevatorCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneOnlyIfDetectedAndStopCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabOneCommand;
 import frc.robot.commands.autonomous.AutoDriveShootAndGrabTwoAndStopCommand;
@@ -98,33 +96,33 @@ public class RobotContainer {
         m_stickClimb1.setYChannel(5);
         m_stickClimb2.setThrottleChannel(2);
         m_autoChooser.setDefaultOption("1 - [AUTO MAIN] Drive and shoot", 
-                m_driveAndShoot); 
-        m_autoChooser.setDefaultOption("2 - [AUTO] Drive with intake on and shoot", 
-                m_driveWithIntakeOnAndShoot);
+                m_driveAndShoot); /* OK */
+        m_autoChooser.setDefaultOption("2 - [AUTO MAIN] Drive with intake on and shoot", 
+                m_driveWithIntakeOnAndShoot); /* OK */
         m_autoChooser.addOption("3 - [AUTO] Drive, shoot and grab one cargo",
-                m_driveShootGrabOne); 
+                m_driveShootGrabOne); /* OK */
         m_autoChooser.addOption("4 - [AUTO MAIN] Drive, shoot, grab one cargo and stop",   
-                m_driveShootGrabOneAndStop);
+                m_driveShootGrabOneAndStop); /* OK */
         m_autoChooser.addOption("5 - [AUTO] Drive, shoot and grab one cargo (without camera) and stop",  
-                m_driveShootGrabOneWithoutCamAndStop); 
+                m_driveShootGrabOneWithoutCamAndStop); /* NOT TESTED */ 
         m_autoChooser.addOption("6 - [AUTO] Drive, shoot, grab one cargo (only if detected) and stop",  
-                m_driveShootGrabOneOnlyIfDetectedAndStop); 
+                m_driveShootGrabOneOnlyIfDetectedAndStop);  /* NOT TESTED */ 
         m_autoChooser.addOption("7 - [AUTO] Drive, shoot and grab two cargos",
-                m_driveShootGrabTwo); 
-        m_autoChooser.addOption("8 - [AUTO] Drive, shoot, grab two cargos and stop",  
-                m_driveShootGrabTwoAndStop); 
+                m_driveShootGrabTwo); /* NOT TESTED */ 
+        m_autoChooser.addOption("8 - [AUTO MAIN] Drive, shoot, grab two cargos and stop",  
+                m_driveShootGrabTwoAndStop);  /* FAILED (second cargo) */
         m_autoChooser.addOption("9 - [AUTO] Drive 200ft backward with intake on",
                 new DriveStraight(200, m_driveSubsystem).withTimeout(8)); 
-        m_autoChooser.addOption("10 - Drive forward", 
+        m_autoChooser.addOption("10 - [TEST] Drive forward", 
                 new DriveStraight(100, m_driveSubsystem));
-        m_autoChooser.addOption("11 - Drive forward (using gyro)", 
+        m_autoChooser.addOption("11 - [TEST] Drive forward (using gyro)", 
                 new DriveStraightGyro(m_driveSubsystem, 0.7).withTimeout(5));
-        m_autoChooser.addOption("12 - Find and grab one cargo", /* OK */
+        m_autoChooser.addOption("12 - [TEST] Find and grab one cargo", 
                 new FindCargo(m_driveSubsystem).withTimeout(6).andThen(
                 new GrabCargo(m_driveSubsystem, m_elevatorSubsystem, m_intakeSubsystem).withTimeout(6)));       
-        m_autoChooser.addOption("13 - Shooter with elevator command", 
-                new ShooterWithElevatorCommand(m_shooterSubsystem, m_elevatorSubsystem, 2));
-        m_autoChooser.setDefaultOption("14 - Grab cargo if detected", /* OK */
+        m_autoChooser.addOption("13 - [TEST] Shooter with elevator command", 
+                new PrepareAndShootCommand(m_shooterSubsystem, m_elevatorSubsystem, 2));
+        m_autoChooser.setDefaultOption("14 - [TEST] Grab cargo if detected", 
                 new GrabCargo(m_driveSubsystem, m_elevatorSubsystem, m_intakeSubsystem).withTimeout(5));
         SmartDashboard.putData(m_autoChooser);
         configureButtonBindings();
@@ -165,7 +163,7 @@ public class RobotContainer {
         // CLIMB
         m_climbSubsystem.setDefaultCommand(new RunCommand(
                 () -> {
-                    System.out.println(m_stickClimb1.getY() + " " + m_stickClimb2.getY());
+                    // System.out.println(m_stickClimb1.getY() + " " + m_stickClimb2.getY());
                     m_climbSubsystem.set(m_stickClimb1.getY(), m_stickClimb2.getY());
                 },
                 m_climbSubsystem));
